@@ -40,8 +40,8 @@ public class DBHelper extends SQLiteAssetHelper{
             while (!cursor.isAfterLast()){
                 //讀欄
                 Category category = new Category(cursor.getInt(cursor.getColumnIndex("ID")),
-                                                    cursor.getString(cursor.getColumnIndex("NAME")),
-                                                    cursor.getString(cursor.getColumnIndex("IMAGE")));
+                                                    cursor.getString(cursor.getColumnIndex("Name")),
+                                                    cursor.getString(cursor.getColumnIndex("Image")));
                 //加入List
                 categories.add(category);
                 cursor.moveToNext();
