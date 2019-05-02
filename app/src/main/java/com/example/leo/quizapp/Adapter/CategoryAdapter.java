@@ -1,6 +1,7 @@
 package com.example.leo.quizapp.Adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
@@ -10,7 +11,9 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.leo.quizapp.Common.Common;
 import com.example.leo.quizapp.Model.Category;
+import com.example.leo.quizapp.QuestionActivity;
 import com.example.leo.quizapp.R;
 import java.util.List;
 
@@ -62,7 +65,9 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.MyView
         card_category.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(context,"Click on"+categories.get(getAdapterPosition()).getName(),Toast.LENGTH_LONG).show();
+                Common.selectedCategory = categories.get(getAdapterPosition()); //Assign Current Category
+                Intent intent = new Intent(context, QuestionActivity.class);
+                context.startActivity(intent);
             }
         });
         }
