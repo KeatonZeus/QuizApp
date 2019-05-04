@@ -5,12 +5,13 @@ import android.os.CountDownTimer;
 import com.example.leo.quizapp.Model.Category;
 import com.example.leo.quizapp.Model.CurrentQuestion;
 import com.example.leo.quizapp.Model.Question;
+import com.example.leo.quizapp.QuestionFragment;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class Common {
-    public static final int TOTAL_TIME = 20 * 60 * 1000; // 20min
+    public static final int TOTAL_TIME = 20*60*1000; // 20min
     public static List<Question> questionList = new ArrayList<Question>();
     public static List<CurrentQuestion> answerSheetList = new ArrayList<CurrentQuestion>();
     public static Category selectedCategory = new Category();
@@ -18,6 +19,7 @@ public class Common {
     public static CountDownTimer countDownTimer;
     public static int right_answer_count = 0;
     public static int wrong_answer_count = 0;
+    public static ArrayList<QuestionFragment> fragmentsList = new ArrayList<>();
 
     public enum ANSWER_TYPE{
         NO_ANSWER,
