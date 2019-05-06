@@ -10,6 +10,7 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -38,7 +39,7 @@ public class QuestionActivity extends AppCompatActivity
 
     int time_play = Common.TOTAL_TIME;
     boolean isAnswerModeView = false;
-
+    String countDebug = "countDebug";
 
     RecyclerView answer_sheet_view;
     AnswerSheetAdapter answerSheetAdapter;
@@ -103,6 +104,105 @@ public class QuestionActivity extends AppCompatActivity
             QuestionFragmentAdapter questionFragmentAdapter = new QuestionFragmentAdapter(getSupportFragmentManager(),this,Common.fragmentsList);
             viewPager.setAdapter(questionFragmentAdapter);
             tabLayout.setupWithViewPager(viewPager);
+
+            // Event
+            viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+
+                int SCROLLING_RIGHT = 0;
+                int SCROLLING_LEFT = 1;
+                int SCROLLING_UNDETERMINED = 2;
+
+                int currentScrollDirection = 2;
+
+                private void setScrollDirection(float positionOffset){
+                    if ((1-positionOffset) >= 0.5)
+                        this.currentScrollDirection = SCROLLING_RIGHT;
+                    else if ((1-positionOffset) <= 0.5)
+                        this.currentScrollDirection = SCROLLING_LEFT;
+                }
+
+                private boolean isScrollDirectionUndetermined(){
+                    return currentScrollDirection == SCROLLING_UNDETERMINED;
+                }
+
+                private boolean isScrollingRight(){
+                    return currentScrollDirection == SCROLLING_RIGHT;
+                }
+
+                private boolean isScrollingLeft(){
+                    return currentScrollDirection == SCROLLING_LEFT;
+                }
+                @Override
+                public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+                    if (isScrollDirectionUndetermined())
+                        setScrollDirection(positionOffset);
+                }
+
+                @Override
+                public void onPageSelected(int i) {
+
+                    QuestionFragment questionFragment;
+                    int position = 0;
+                    if (i > 0){
+                        if (isScrollingRight()){
+                            // If user scroll to Right , get previous frament to  calculate result
+                            questionFragment = Common.fragmentsList.get(i-1);
+                            position = i-1;
+                        }
+                        else if (isScrollingLeft()){
+                            // If user scroll to left , get next fragment to calculate result
+                            questionFragment = Common.fragmentsList.get(i+1);
+                            position = i+1;
+                        }
+                        else {
+                            questionFragment = Common.fragmentsList.get(position);
+                        }
+                    }
+                    else {
+                        questionFragment = Common.fragmentsList.get(0);
+                        position = 0;
+                    }
+                    // If you want to show correct answer, just call function here
+                    CurrentQuestion question_state = questionFragment.getSelectedAnswer();
+                    Common.answerSheetList.set(position,question_state); // Set question answer for answerSheet
+                    answerSheetAdapter.notifyDataSetChanged(); // Change color in answer sheet
+                    
+                    countCorrectAnswer();
+
+                    txt_right_answer.setText(new StringBuilder(
+                            String.format("%d",Common.right_answer_count))
+                            .append("/")
+                            .append(String.format("%d",Common.questionList.size()))
+                    );
+
+                    if (question_state.getType() == Common.ANSWER_TYPE.NO_ANSWER){
+                        questionFragment.showCorrectAnswer();
+                        questionFragment.disableAnswer();
+                    }
+                }
+
+                @Override
+                public void onPageScrollStateChanged(int state) {
+                    if (state == ViewPager.SCROLL_STATE_IDLE)
+                        this.currentScrollDirection = SCROLLING_UNDETERMINED;
+                }
+            });
+        }
+    }
+
+    private void countCorrectAnswer() {
+        // Reset variable
+        Common.right_answer_count = Common.wrong_answer_count = 0;
+
+        for (CurrentQuestion item : Common.answerSheetList) {
+            if (item.getType() == Common.ANSWER_TYPE.RIGHT_ANSWER){
+                Log.d(countDebug,"count 1 right answer");
+                Common.right_answer_count++;
+            }
+            else if (item.getType() == Common.ANSWER_TYPE.WRONG_ANSWER){
+                Log.d(countDebug,"count 1 wrong answer");
+                Common.wrong_answer_count++;
+            }
         }
     }
 

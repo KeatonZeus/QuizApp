@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -39,6 +40,7 @@ public class QuestionFragment extends Fragment implements IQuestion {
 
     Question question;
     int questionIndex = -1;
+    String countDebug = "countDebug";
 
     public QuestionFragment() {
         // Required empty public constructor
@@ -143,24 +145,29 @@ public class QuestionFragment extends Fragment implements IQuestion {
             Object[] arrayAnswer = Common.selected_values.toArray();
             for (int i = 0 ; i < arrayAnswer.length; i++){
                 if(i < arrayAnswer.length-1)
-                    result.append(new StringBuilder((String) arrayAnswer[i]).substring(0,1)).append(","); // Take first letter of answer. Ex: arrayAnswer[0] = A. NewYork , we take A to result
+                    result.append(new StringBuilder(((String)arrayAnswer[i]).substring(0,1)).append(",")); // Take first letter of answer. Ex: arrayAnswer[0] = A. NewYork , we take A to result
                 else
-                    result.append(new StringBuilder((String) arrayAnswer[i])).substring(0,1);
+                    result.append(new StringBuilder((String)arrayAnswer[i]).substring(0,1));
             }
         }
         else if (Common.selected_values.size() == 1){ //單選
             // If only one choice
             Object[] arrayAnswer = Common.selected_values.toArray();
-            result.append((String) arrayAnswer[0]).substring(0,1);
+            result.append(new StringBuilder((String)arrayAnswer[0]).substring(0,1));
         }
 
         if (question != null){
             // Compare correct answer with user answer
             if(!TextUtils.isEmpty(result)){
-                if (result.toString().equals(question.getCorrectAnswer()))
+                Log.d(countDebug,"result is : "+result.toString());
+                if (result.toString().equals(question.getCorrectAnswer())){
                     currentQuestion.setType(Common.ANSWER_TYPE.RIGHT_ANSWER);
-                else
+                    Log.d(countDebug,"getCorrectAnswer QFragment  RIGHT");
+                }
+                else{
                     currentQuestion.setType(Common.ANSWER_TYPE.WRONG_ANSWER);
+                    Log.d(countDebug,"getCorrectAnswer QFragment  WRONG");
+                }
             }
             else
                 currentQuestion.setType(Common.ANSWER_TYPE.NO_ANSWER);
