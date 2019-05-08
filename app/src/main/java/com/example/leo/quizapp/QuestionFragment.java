@@ -147,13 +147,13 @@ public class QuestionFragment extends Fragment implements IQuestion {
                 if(i < arrayAnswer.length-1)
                     result.append(new StringBuilder(((String)arrayAnswer[i]).substring(0,1)).append(",")); // Take first letter of answer. Ex: arrayAnswer[0] = A. NewYork , we take A to result
                 else
-                    result.append(new StringBuilder((String)arrayAnswer[i]).substring(0,1));
+                    result.append(new StringBuilder(((String)arrayAnswer[i])).substring(0,1));
             }
         }
         else if (Common.selected_values.size() == 1){ //單選
             // If only one choice
             Object[] arrayAnswer = Common.selected_values.toArray();
-            result.append(new StringBuilder((String)arrayAnswer[0]).substring(0,1));
+            result.append(new StringBuilder(((String)arrayAnswer[0]).substring(0,1)));
         }
 
         if (question != null){
