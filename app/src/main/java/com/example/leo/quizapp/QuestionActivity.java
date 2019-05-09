@@ -1,6 +1,7 @@
 package com.example.leo.quizapp;
 
 import android.app.Fragment;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.annotation.NonNull;
@@ -8,6 +9,7 @@ import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
+import android.support.v4.content.res.ResourcesCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -32,12 +34,14 @@ import com.example.leo.quizapp.DBHelper.DBHelper;
 import com.example.leo.quizapp.Model.CurrentQuestion;
 import com.example.leo.quizapp.Model.Question;
 import com.github.javiersantos.materialstyleddialogs.MaterialStyledDialog;
+import com.google.gson.Gson;
 
 import java.util.concurrent.TimeUnit;
 
 public class QuestionActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
+    private static final int CODE_GET_RESULT = 9999;
     int time_play = Common.TOTAL_TIME;
     boolean isAnswerModeView = false;
     String countDebug = "countDebug";
@@ -314,6 +318,12 @@ public class QuestionActivity extends AppCompatActivity
         }
 
         // Navigate to new Result Activity here
+        Intent intent = new Intent(QuestionActivity.this, ResultActivity.class);
+        Common.timer = Common.TOTAL_TIME - time_play;
+        Common.no_answer_count = Common.questionList.size() - (Common.wrong_answer_count + Common.right_answer_count);
+        Common.data_question = new StringBuilder(new Gson().toJson(Common.answerSheetList));
+
+        startActivityForResult(intent,CODE_GET_RESULT);
     }
 
     @Override

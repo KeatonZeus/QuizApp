@@ -21,8 +21,11 @@ public class Common {
     public static CountDownTimer countDownTimer;
     public static int right_answer_count = 0;
     public static int wrong_answer_count = 0;
+    public static int no_answer_count = 0;
+    public static StringBuilder data_question = new StringBuilder();
     public static ArrayList<QuestionFragment> fragmentsList = new ArrayList<>();
     public static TreeSet<String> selected_values = new TreeSet<>();
+    public static Object timer = 0;
 
     public enum ANSWER_TYPE{
         NO_ANSWER,
